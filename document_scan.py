@@ -9,12 +9,14 @@ import os
 
 # Create a directory to save scanned images
 def createDirectory():
-    imgDir = 'scanned_images'
+    imgDir = 'scanned_images/DocumentsScanned/'
+    flag = 'success'
     dirPath = os.path.dirname(os.path.realpath(__file__))
     try:
         os.mkdir(os.path.join(dirPath, imgDir))
     except OSError as e:
-        print(e)
+        flag = e
+    return flag, imgDir
 
 # Reorded the contour points
 
@@ -89,11 +91,11 @@ def getContours(img, imgContour, contourArea):
 
 
 def main():
-    createDirectory()
+    _, nameDir = createDirectory()
     widthImg, heightImg = 640, 480
     brightness = 100
     defaultMsg = "Checking for Scannable Object \n Please Wait"
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     cap.set(3, widthImg)
     cap.set(4, heightImg)
     cap.set(10, brightness)
@@ -123,7 +125,7 @@ def main():
                 time.sleep(1)
                 timeNow = datetime.now()
                 timeNow_str = timeNow.strftime("%d-%m_%Y_%H_%M_%S")
-                savePath = 'scanned_images/Scanned_image_{}.jpg'.format(timeNow_str)
+                savePath = nameDir+'image_{}.jpg'.format(timeNow_str)
                 cv2.imwrite(savePath, imgWarped)
                 break
             except Exception as e:
